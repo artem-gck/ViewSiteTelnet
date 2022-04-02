@@ -41,12 +41,14 @@ namespace Cource.SQLAccess
                     var id = reader.GetValue(0);
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
+                    var role = reader.GetValue(3);
 
                     user = new User
                     {
                         Id = (int)id,
                         Email = (string)email,
-                        Password = (string)password
+                        Password = (string)password,
+                        Role = (string)role,
                     };
                 }
             }
@@ -76,12 +78,14 @@ namespace Cource.SQLAccess
                     var id = reader.GetValue(0);
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
+                    var role = reader.GetValue(3);
 
                     user = new User
                     {
                         Id = (int)id,
                         Email = (string)email,
-                        Password = (string)password
+                        Password = (string)password,
+                        Role = (string)role
                     };
                 }
             }
@@ -99,8 +103,10 @@ namespace Cource.SQLAccess
 
             var nameParam = new SqlParameter("@email", user.Email);
             var passwordParam = new SqlParameter("@password", user.Password);
+            var roleParam = new SqlParameter("@role", user.Role);
             command.Parameters.Add(nameParam);
             command.Parameters.Add(passwordParam);
+            command.Parameters.Add(roleParam);
 
             var id = await command.ExecuteNonQueryAsync();
 

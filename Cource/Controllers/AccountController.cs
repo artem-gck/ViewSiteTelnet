@@ -33,7 +33,8 @@ namespace Cource.Controllers
 
                 if (user != null)
                 {
-                    await Authenticate(model.Email);
+                    model.Role = user.Role;
+                    await Authenticate(model);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -58,9 +59,10 @@ namespace Cource.Controllers
                 var user = await _accauntAccess.GetUser(model);
                 if (user == null)
                 {
-                    await _accauntAccess.AddUser(new User { Email = model.Email, Password = model.Password });
+                    model.Role = "User";
+                    await _accauntAccess.AddUser(new User { Email = model.Email, Password = model.Password, Role = model.Role });
 
-                    await Authenticate(model.Email);
+                    await Authenticate(model);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -76,11 +78,25 @@ namespace Cource.Controllers
             return RedirectToAction("Login", "Account");
         }
 
-        private async Task Authenticate(string userName)
+        private async Task Authenticate(LoginModel model)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role)
+            };
+
+            var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        private async Task Authenticate(RegisterModel model)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role)
             };
 
             var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

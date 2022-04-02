@@ -10,5 +10,6 @@ namespace Cource.ViewModels
         [Required(ErrorMessage = "Не указан пароль")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public string Role { get; set; }
     }
 }

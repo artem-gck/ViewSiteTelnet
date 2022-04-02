@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Cource</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -22,17 +22,23 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Новости</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">История</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">История</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">История</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Теория</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">История</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Примеры</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">История</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Источники</a>
                         </li>
+                        @if(User.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType).Value == "Admin")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Администратор</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
