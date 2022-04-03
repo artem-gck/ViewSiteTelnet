@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Role)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NewsMaker)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -37,8 +40,10 @@
                 @Html.DisplayFor(modelItem => item.Role)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.NewsMaker)
+            </td>
+            <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>

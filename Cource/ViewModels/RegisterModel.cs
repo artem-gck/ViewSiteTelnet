@@ -15,5 +15,6 @@ namespace Cource.ViewModels
         [Compare("Password", ErrorMessage = "Пароль введен неверно")]
         public string ConfirmPassword { get; set; }
         public string Role { get; set; }
+        public bool NewsMaker { get; set; }
     }
 }

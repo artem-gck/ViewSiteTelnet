@@ -13,7 +13,8 @@ namespace Cource.SQLAccess
         public Task<int> AddUser(User user);
         public Task<List<User>> GetUsers();
         public Task<int> DeleteUser(User user);
-        public Task<int> UpdateUser(User oldUser, User newUser);
+        public Task<int> UpdateUser(User user);
         public Task<List<RoleModel>> GetRoles();
+        public Task<List<MakeModel>> GetMakes();
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -32,6 +33,7 @@ namespace Cource.Controllers
                 if (user != null)
                 {
                     model.Role = user.Role;
+                    model.NewsMaker = user.NewsMaker;
                     await Authenticate(model);
 
                     return RedirectToAction("Index", "Home");
@@ -56,6 +58,7 @@ namespace Cource.Controllers
                 if (user == null)
                 {
                     model.Role = "User";
+                    model.NewsMaker = false;
                     await _accauntAccess.AddUser(new User { Email = model.Email, Password = model.Password, Role = model.Role });
 
                     await Authenticate(model);
@@ -79,7 +82,8 @@ namespace Cource.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role, "admin"),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.NewsMaker.ToString(), "news")
             };
 
             var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -92,7 +96,8 @@ namespace Cource.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, model.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.Role, "admin"),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, model.NewsMaker.ToString(), "news")
             };
 
             var id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

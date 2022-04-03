@@ -19,6 +19,7 @@ namespace Cource.SQLAccess
         private const string sqlUpdateUser = "sp_UpdateUser";
         private const string sqlDeleteUser = "sp_DeleteUser";
         private const string sqlGetRoles = "sp_GetRoles";
+        private const string sqlGetMakes = "sp_GetMakes";
 
         public AccauntAccess(IConfiguration configuration)
             => connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -48,6 +49,7 @@ namespace Cource.SQLAccess
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
                     var role = reader.GetValue(3);
+                    var newsMaker = reader.GetValue(4);
 
                     user = new User
                     {
@@ -55,6 +57,7 @@ namespace Cource.SQLAccess
                         Email = (string)email,
                         Password = (string)password,
                         Role = (string)role,
+                        NewsMaker = (bool)newsMaker,
                     };
                 }
             }
@@ -85,13 +88,15 @@ namespace Cource.SQLAccess
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
                     var role = reader.GetValue(3);
+                    var newsMaker = reader.GetValue(4);
 
                     user = new User
                     {
                         Id = (int)id,
                         Email = (string)email,
                         Password = (string)password,
-                        Role = (string)role
+                        Role = (string)role,
+                        NewsMaker = (bool)newsMaker,
                     };
                 }
             }
@@ -110,16 +115,18 @@ namespace Cource.SQLAccess
             var nameParam = new SqlParameter("@email", user.Email);
             var passwordParam = new SqlParameter("@password", user.Password);
             var roleParam = new SqlParameter("@role", user.Role);
+            var newsMakerParam = new SqlParameter("@newsMaker", user.NewsMaker);
             command.Parameters.Add(nameParam);
             command.Parameters.Add(passwordParam);
             command.Parameters.Add(roleParam);
+            command.Parameters.Add(newsMakerParam);
 
             var id = await command.ExecuteNonQueryAsync();
 
             return id;
         }
 
-        public async Task<int> UpdateUser(User oldUser, User newUser)
+        public async Task<int> UpdateUser(User user)
         {
             using var connection = new SqlConnection(connectionString);
 
@@ -127,16 +134,16 @@ namespace Cource.SQLAccess
             var command = new SqlCommand(sqlUpdateUser, connection);
             command.CommandType = CommandType.StoredProcedure;
 
-            var oldNameParam = new SqlParameter("@oldEmail", oldUser.Email);
-            var oldPasswordParam = new SqlParameter("@oldPassword", oldUser.Password);
-            var newNameParam = new SqlParameter("@newEmail", newUser.Role);
-            var newPasswordParam = new SqlParameter("@newPassword", newUser.Role);
-            var newRoleParam = new SqlParameter("@newRole", newUser.Role);
+            var oldNameParam = new SqlParameter("@id", user.Id);
+            var newNameParam = new SqlParameter("@email", user.Email);
+            var newPasswordParam = new SqlParameter("@password", user.Password);
+            var newRoleParam = new SqlParameter("@role", user.Role);
+            var newsMakerParam = new SqlParameter("@newsMaker", user.NewsMaker);
             command.Parameters.Add(oldNameParam);
-            command.Parameters.Add(oldPasswordParam);
             command.Parameters.Add(newNameParam);
             command.Parameters.Add(newPasswordParam);
             command.Parameters.Add(newRoleParam);
+            command.Parameters.Add(newsMakerParam);
 
             var id = await command.ExecuteNonQueryAsync();
 
@@ -178,13 +185,15 @@ namespace Cource.SQLAccess
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
                     var role = reader.GetValue(3);
+                    var newsMaker = reader.GetValue(4);
 
                     var user = new User
                     {
                         Id = (int)id,
                         Email = (string)email,
                         Password = (string)password,
-                        Role = (string)role
+                        Role = (string)role,
+                        NewsMaker = (bool)newsMaker,
                     };
 
                     listOfUsers.Add(user);
@@ -216,13 +225,15 @@ namespace Cource.SQLAccess
                     var email = reader.GetValue(1);
                     var password = reader.GetValue(2);
                     var role = reader.GetValue(3);
+                    var newsMaker = reader.GetValue(4);
 
                     user = new User
                     {
                         Id = (int)id,
                         Email = (string)email,
                         Password = (string)password,
-                        Role = (string)role
+                        Role = (string)role,
+                        NewsMaker = (bool)newsMaker,
                     };
                 }
             }
@@ -252,6 +263,30 @@ namespace Cource.SQLAccess
             }
 
             return listOfRoles;
+        }
+
+        public async Task<List<MakeModel>> GetMakes()
+        {
+            using var connection = new SqlConnection(connectionString);
+
+            await connection.OpenAsync();
+            var command = new SqlCommand(sqlGetMakes, connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            using var reader = await command.ExecuteReaderAsync();
+            var listOfMakes = new List<MakeModel>();
+
+            if (reader.HasRows)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var make = reader.GetValue(0);
+
+                    listOfMakes.Add(new MakeModel() { Make = (bool)make });
+                }
+            }
+
+            return listOfMakes;
         }
     }
 }

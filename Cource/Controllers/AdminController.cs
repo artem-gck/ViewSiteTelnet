@@ -28,6 +28,7 @@ namespace Cource.Controllers
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
+                NewsMaker = user.NewsMaker,
             });
 
             return View(usersView);
@@ -41,6 +42,10 @@ namespace Cource.Controllers
 
             ViewBag.roles = new SelectList(roles, "Role", "Role");
 
+            var makes = await _accauntAccess.GetMakes();
+
+            ViewBag.making = new SelectList(makes, "Make", "Make");
+
             return View();
         }
 
@@ -51,7 +56,8 @@ namespace Cource.Controllers
                 Id = userView.Id,
                 Email = userView.Email,
                 Password = userView.Password,
-                Role = userView.Role
+                Role = userView.Role,
+                NewsMaker = userView.NewsMaker,
             };
 
             await _accauntAccess.AddUser(user);
@@ -71,6 +77,7 @@ namespace Cource.Controllers
                 Email = user.Email,
                 Password = user.Password,
                 Role = user.Role,
+                NewsMaker = user.NewsMaker,
             };
 
             return View(userView);
@@ -85,9 +92,52 @@ namespace Cource.Controllers
                 Email = userView.Email,
                 Password = userView.Password,
                 Role = userView.Role,
+                NewsMaker = userView.NewsMaker,
             };
 
             await _accauntAccess.DeleteUser(user);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var roles = await _accauntAccess.GetRoles();
+
+            ViewBag.roles = new SelectList(roles, "Role", "Role");
+
+            var makes = await _accauntAccess.GetMakes();
+
+            ViewBag.making = new SelectList(makes, "Make", "Make");
+
+            var user = await _accauntAccess.GetUserById(id);
+
+            var userView = new LoginModel()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = user.Password,
+                Role = user.Role,
+                NewsMaker = user.NewsMaker,
+            };
+
+            return View(userView);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(LoginModel userView)
+        {
+            var user = new User()
+            {
+                Id = userView.Id,
+                Email = userView.Email,
+                Password = userView.Password,
+                Role = userView.Role,
+                NewsMaker = userView.NewsMaker,
+            };
+
+            await _accauntAccess.UpdateUser(user);
 
             return RedirectToAction("Index");
         }

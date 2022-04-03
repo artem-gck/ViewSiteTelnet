@@ -18,7 +18,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if(User.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType).Value == "Admin")
+                        @if(User.Claims.FirstOrDefault(claim => claim.ValueType == "news").Value == "True")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Новости</a>
@@ -36,7 +36,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Источники</a>
                         </li>
-                        @if(User.Claims.FirstOrDefault(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType).Value == "Admin")
+                        @if(User.Claims.FirstOrDefault(claim => claim.ValueType == "admin").Value == "Admin")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Администратор</a>
