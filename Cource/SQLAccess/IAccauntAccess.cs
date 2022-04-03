@@ -9,9 +9,11 @@ namespace Cource.SQLAccess
     {
         public Task<User> CheckUser(LoginModel model);
         public Task<User> GetUser(RegisterModel model);
+        public Task<User> GetUserById(int id);
         public Task<int> AddUser(User user);
         public Task<List<User>> GetUsers();
-        public Task<int> DeleteUser(LoginModel model);
-        public Task<int> UpdateUser(LoginModel model);
+        public Task<int> DeleteUser(User user);
+        public Task<int> UpdateUser(User oldUser, User newUser);
+        public Task<List<RoleModel>> GetRoles();
     }
 }

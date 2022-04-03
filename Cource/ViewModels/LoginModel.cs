@@ -4,6 +4,7 @@ namespace Cource.ViewModels
 {
     public class LoginModel
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Не указан Email")]
         public string Email { get; set; }
 

@@ -1,5 +1,11 @@
-﻿using Cource.SQLAccess;
+﻿using Cource.Models;
+using Cource.SQLAccess;
+using Cource.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Cource.Controllers
 {
@@ -9,5 +15,81 @@ namespace Cource.Controllers
 
         public AdminController(IAccauntAccess accauntAccess)
             => _accauntAccess = accauntAccess;
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var users = await _accauntAccess.GetUsers();
+
+            var usersView = users.Select(user => new LoginModel()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = user.Password,
+                Role = user.Role,
+            });
+
+            return View(usersView);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var roles = await _accauntAccess.GetRoles();
+
+            ViewBag.roles = new SelectList(roles, "Role", "Role");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(LoginModel userView)
+        {
+            var user = new User() {
+                Id = userView.Id,
+                Email = userView.Email,
+                Password = userView.Password,
+                Role = userView.Role
+            };
+
+            await _accauntAccess.AddUser(user);
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _accauntAccess.GetUserById(id);
+
+            var userView = new LoginModel()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = user.Password,
+                Role = user.Role,
+            };
+
+            return View(userView);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(LoginModel userView)
+        {
+            var user = new User()
+            {
+                Id = userView.Id,
+                Email = userView.Email,
+                Password = userView.Password,
+                Role = userView.Role,
+            };
+
+            await _accauntAccess.DeleteUser(user);
+
+            return RedirectToAction("Index");
+        }
     }
 }

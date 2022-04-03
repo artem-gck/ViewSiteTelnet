@@ -18,10 +18,8 @@ namespace Cource.Controllers
             => _accauntAccess = accauntAccess;
 
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View();
-        }
+        public async Task<IActionResult> Login()
+            => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -45,10 +43,8 @@ namespace Cource.Controllers
         }
 
         [HttpGet]
-        public IActionResult Register()
-        {
-            return View();
-        }
+        public async Task<IActionResult> Register()
+            => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
