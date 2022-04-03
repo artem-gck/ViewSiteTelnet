@@ -31,6 +31,7 @@ namespace Cource
             services.AddControllersWithViews();
 
             services.AddTransient<IAccauntAccess, AccauntAccess>();
+            services.AddTransient<INewsAccess, NewsAccess>();
         }
 
         public void Configure(IApplicationBuilder app)
