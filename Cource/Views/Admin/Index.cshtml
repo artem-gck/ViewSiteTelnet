@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<Cource.ViewModels.LoginModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Администрирование";
 }
 
-<h1>Index</h1>
+<h1>Администрирование</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Новая запись</a>
 </p>
 <table class="table">
     <thead>
@@ -43,8 +43,8 @@
                 @Html.DisplayFor(modelItem => item.NewsMaker)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Измемнить", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Удалить", "Delete", new { id = item.Id })
             </td>
         </tr>
 }

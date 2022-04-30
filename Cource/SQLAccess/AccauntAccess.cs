@@ -20,6 +20,7 @@ namespace Cource.SQLAccess
         private const string sqlDeleteUser = "sp_DeleteUser";
         private const string sqlGetRoles = "sp_GetRoles";
         private const string sqlGetMakes = "sp_GetMakes";
+        private const string sqlGetRole = "sp_GetRole";
 
         public AccauntAccess(IConfiguration configuration)
             => connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -106,15 +107,30 @@ namespace Cource.SQLAccess
 
         public async Task<int> AddUser(User user)
         {
+            int roleId;
+
             using var connection = new SqlConnection(connectionString);
 
             await connection.OpenAsync();
-            var command = new SqlCommand(sqlAddUser, connection);
+            var command = new SqlCommand(sqlGetRole, connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            var roleParam1 = new SqlParameter("@role", user.Role);
+            command.Parameters.Add(roleParam1);
+
+            var reader = await command.ExecuteReaderAsync();
+
+            await reader.ReadAsync();
+            roleId = reader.GetInt32(0);
+
+            await reader.CloseAsync();
+
+            command = new SqlCommand(sqlAddUser, connection);
             command.CommandType = CommandType.StoredProcedure;
 
             var nameParam = new SqlParameter("@email", user.Email);
             var passwordParam = new SqlParameter("@password", user.Password);
-            var roleParam = new SqlParameter("@role", user.Role);
+            var roleParam = new SqlParameter("@role", roleId);
             var newsMakerParam = new SqlParameter("@newsMaker", user.NewsMaker);
             command.Parameters.Add(nameParam);
             command.Parameters.Add(passwordParam);
@@ -128,16 +144,31 @@ namespace Cource.SQLAccess
 
         public async Task<int> UpdateUser(User user)
         {
+            int roleId;
+
             using var connection = new SqlConnection(connectionString);
 
             await connection.OpenAsync();
-            var command = new SqlCommand(sqlUpdateUser, connection);
+            var command = new SqlCommand(sqlGetRole, connection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            var roleParam1 = new SqlParameter("@role", user.Role);
+            command.Parameters.Add(roleParam1);
+
+            var reader = await command.ExecuteReaderAsync();
+
+            await reader.ReadAsync();
+            roleId = reader.GetInt32(0);
+
+            await reader.CloseAsync();
+
+            command = new SqlCommand(sqlUpdateUser, connection);
             command.CommandType = CommandType.StoredProcedure;
 
             var oldNameParam = new SqlParameter("@id", user.Id);
             var newNameParam = new SqlParameter("@email", user.Email);
             var newPasswordParam = new SqlParameter("@password", user.Password);
-            var newRoleParam = new SqlParameter("@role", user.Role);
+            var newRoleParam = new SqlParameter("@role", roleId);
             var newsMakerParam = new SqlParameter("@newsMaker", user.NewsMaker);
             command.Parameters.Add(oldNameParam);
             command.Parameters.Add(newNameParam);

@@ -24,6 +24,7 @@ namespace Cource.SQLAccess
             using var connection = new SqlConnection(connectionString);
 
             await connection.OpenAsync();
+
             var command = new SqlCommand(sqlGetNewss, connection);
             command.CommandType = CommandType.StoredProcedure;
 
