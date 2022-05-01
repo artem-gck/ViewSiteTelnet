@@ -3,6 +3,8 @@ using Cource.SQLAccess;
 using Cource.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -17,9 +19,12 @@ namespace Cource.Controllers
             => _newsAccess = newsAccess;
 
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search = null)
         {
             var news = await _newsAccess.GetAllNews();
+
+            if (search is not null)
+                news = news.Where(n => n.Title.Contains(search) || n.Text.Contains(search)).ToList();
 
             var newsView = news.Select(n => new NewsModel()
             {
@@ -100,6 +105,25 @@ namespace Cource.Controllers
             await _newsAccess.UpdateNews(news);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Search()
+        {
+            var search = new SearchModel()
+            {
+                Search = ""
+            };
+
+            return View(search);
+        }
+
+        public async Task<IActionResult> Search(SearchModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Search))
+                return RedirectToAction("Index");
+
+            return LocalRedirect("/Home?search=" + model.Search);
         }
     }
 }
